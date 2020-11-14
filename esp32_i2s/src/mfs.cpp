@@ -1,13 +1,11 @@
-#include <Arduino.h>
-#include "my_fs.h"
-
+#include "mfs.h"
 
 File file;
 const char filename[] = "/recording.wav";
 const int headerSize = 44;
 
-
-void wavHeader(byte* header, int wavSize){
+void wavHeader(byte *header, int wavSize)
+{
   header[0] = 'R';
   header[1] = 'I';
   header[2] = 'F';
@@ -55,42 +53,53 @@ void wavHeader(byte* header, int wavSize){
   header[43] = (byte)((wavSize >> 24) & 0xFF);
 }
 
-void listSPIFFS(void) {
+void listSPIFFS(void)
+{
   Serial.println(F("\r\nListing SPIFFS files:"));
-  static const char line[] PROGMEM =  "=================================================";
+  static const char line[] PROGMEM = "=================================================";
 
   Serial.println(FPSTR(line));
   Serial.println(F("  File name                              Size"));
   Serial.println(FPSTR(line));
 
   fs::File root = SPIFFS.open("/");
-  if (!root) {
+  if (!root)
+  {
     Serial.println(F("Failed to open directory"));
     return;
   }
-  if (!root.isDirectory()) {
+  if (!root.isDirectory())
+  {
     Serial.println(F("Not a directory"));
     return;
   }
 
   fs::File file = root.openNextFile();
-  while (file) {
+  while (file)
+  {
 
-    if (file.isDirectory()) {
+    if (file.isDirectory())
+    {
       Serial.print("DIR : ");
       String fileName = file.name();
       Serial.print(fileName);
-    } else {
+    }
+    else
+    {
       String fileName = file.name();
       Serial.print("  " + fileName);
       // File path can be 31 characters maximum in SPIFFS
       int spaces = 33 - fileName.length(); // Tabulate nicely
-      if (spaces < 1) spaces = 1;
-      while (spaces--) Serial.print(" ");
-      String fileSize = (String) file.size();
+      if (spaces < 1)
+        spaces = 1;
+      while (spaces--)
+        Serial.print(" ");
+      String fileSize = (String)file.size();
       spaces = 10 - fileSize.length(); // Tabulate nicely
-      if (spaces < 1) spaces = 1;
-      while (spaces--) Serial.print(" ");
+      if (spaces < 1)
+        spaces = 1;
+      while (spaces--)
+        Serial.print(" ");
       Serial.println(fileSize + " bytes");
     }
 
@@ -102,16 +111,20 @@ void listSPIFFS(void) {
   delay(1000);
 }
 
-void SPIFFSInit(){
-  if(!SPIFFS.begin(true)){
+void SPIFFSInit()
+{
+  if (!SPIFFS.begin(true))
+  {
     Serial.println("SPIFFS initialisation failed!");
-    while(1) yield();
+    while (1)
+      yield();
   }
 
   SPIFFS.format();
-//  SPIFFS.remove(filename);
+  //  SPIFFS.remove(filename);
   file = SPIFFS.open(filename, FILE_WRITE);
-  if(!file){
+  if (!file)
+  {
     Serial.println("File is not available!");
   }
 
@@ -120,4 +133,9 @@ void SPIFFSInit(){
 
   file.write(header, headerSize);
   listSPIFFS();
+}
+
+File SPIFFSOpen()
+{
+  return SPIFFS.open(filename, FILE_READ);
 }
