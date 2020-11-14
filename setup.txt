@@ -1,0 +1,13 @@
+Non-SPIRAM firmware will work on any board, whereas SPIRAM enabled firmware will only work on boards with 4MiB of external pSRAM.
+
+esptool.py --port com3 erase_flash
+
+esptool.py --chip esp32 --port com3 write_flash -z 0x1000 esp32-idf3-i2s-2020-05-13-v1-12.bin
+
+ampy -p com3 ls
+
+ampy --port com3 run _.py
+
+ampy --port com3 get record.wav record.wav #get file from board
+
+ampy --port com3 rm record.wav
