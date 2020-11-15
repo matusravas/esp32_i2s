@@ -16,7 +16,7 @@ void i2sScaleDataADC(uint8_t *d_buff, uint8_t *s_buff, uint32_t len)
     }
 }
 
-void i2sADC(void *arg)
+void read_I2S_adc(void *arg)
 {
 
     int i2s_read_len = I2S_READ_LEN;
@@ -63,7 +63,7 @@ void i2sADC(void *arg)
     vTaskDelete(NULL); //deleting task itself
 }
 
-void i2sInit()
+void initI2S()
 {
     i2s_config_t i2s_config = {
         .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_RX),

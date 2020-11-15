@@ -4,5 +4,5 @@
 #include "mfs.h"
 #include "mwifi.h"
 
-void i2sADC(void *arg);
-void i2sInit();
+void read_I2S_adc(void *arg);
+void initI2S();

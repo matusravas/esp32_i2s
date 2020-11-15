@@ -4,7 +4,7 @@ bool isWIFIConnected;
 
 extern File file;
 
-void wifiConnect(void *pvParameters)
+void connect_wifi(void *pvParameters)
 {
     isWIFIConnected = false;
     char *ssid = "cerova_449b";

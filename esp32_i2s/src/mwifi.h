@@ -3,6 +3,6 @@
 #include <HTTPClient.h>
 #include "mfs.h"
 
-void wifiConnect(void *pvParameters);
+void connect_wifi(void *pvParameters);
 
 void uploadFile();
