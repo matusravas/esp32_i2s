@@ -53,7 +53,7 @@ void wavHeader(byte *header, int wavSize)
   header[43] = (byte)((wavSize >> 24) & 0xFF);
 }
 
-void listSPIFFS(void)
+void listFiles(void)
 {
   Serial.println(F("\r\nListing SPIFFS files:"));
   static const char line[] PROGMEM = "=================================================";
@@ -111,7 +111,7 @@ void listSPIFFS(void)
   delay(1000);
 }
 
-void SPIFFSInit()
+void initSPIFFS()
 {
   if (!SPIFFS.begin(true))
   {
@@ -132,10 +132,10 @@ void SPIFFSInit()
   wavHeader(header, FLASH_RECORD_SIZE);
 
   file.write(header, headerSize);
-  listSPIFFS();
+  listFiles();
 }
 
-File SPIFFSOpen()
+File getFile()
 {
   return SPIFFS.open(filename, FILE_READ);
 }

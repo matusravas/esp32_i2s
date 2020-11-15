@@ -1,8 +1,10 @@
 #include "mi2s.h"
 
 extern File file;
+// extern bool isWIFIConnected;
 
-void i2s_adc_data_scale(uint8_t *d_buff, uint8_t *s_buff, uint32_t len)
+
+void i2sScaleDataADC(uint8_t *d_buff, uint8_t *s_buff, uint32_t len)
 {
     uint32_t j = 0;
     uint32_t dac_value = 0;
@@ -14,7 +16,7 @@ void i2s_adc_data_scale(uint8_t *d_buff, uint8_t *s_buff, uint32_t len)
     }
 }
 
-void i2s_adc(void *arg)
+void i2sADC(void *arg)
 {
 
     int i2s_read_len = I2S_READ_LEN;
@@ -31,15 +33,15 @@ void i2s_adc(void *arg)
     while (flash_wr_size < FLASH_RECORD_SIZE)
     {
         //read data from I2S bus, in this case, from ADC.
-        ets_printf("t=%ld\n", millis());
+        // ets_printf("t=%ld\n", millis());
         i2s_read(I2S_PORT, (void *)i2s_read_buff, i2s_read_len, &bytes_read, portMAX_DELAY); //0.5 sec
-        ets_printf("t1=%ld\n", millis());
+        // ets_printf("t1=%ld\n", millis());
 
         //example_disp_buf((uint8_t*) i2s_read_buff, 64);
         //save original data from I2S(ADC) into flash.
-        i2s_adc_data_scale(flash_write_buff, (uint8_t *)i2s_read_buff, i2s_read_len);
+        i2sScaleDataADC(flash_write_buff, (uint8_t *)i2s_read_buff, i2s_read_len);
         file.write((const byte *)flash_write_buff, i2s_read_len); //0.1 sec
-        ets_printf("t2=%ld\n", millis());
+        // ets_printf("t2=%ld\n", millis());
         flash_wr_size += i2s_read_len;
         ets_printf("Sound recording %u%%\n", flash_wr_size * 100 / FLASH_RECORD_SIZE);
         ets_printf("Never Used Stack Size: %u\n", uxTaskGetStackHighWaterMark(NULL));
@@ -51,8 +53,14 @@ void i2s_adc(void *arg)
     free(flash_write_buff);
     flash_write_buff = NULL;
 
-    listSPIFFS();
-    vTaskDelete(NULL);
+    listFiles();
+
+    // if(isWIFIConnected){
+    //   uploadFile();
+    // }
+    uploadFile();
+    
+    vTaskDelete(NULL); //deleting task itself
 }
 
 void i2sInit()

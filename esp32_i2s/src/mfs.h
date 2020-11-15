@@ -4,8 +4,8 @@
 
 void wavHeader(byte *header, int wavSize);
 
-void listSPIFFS(void);
+void listFiles(void);
 
-void SPIFFSInit();
+void initSPIFFS();
 
-File SPIFFSOpen();
+File getFile();

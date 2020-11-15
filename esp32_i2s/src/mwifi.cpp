@@ -16,6 +16,7 @@ void wifiConnect(void *pvParameters)
         vTaskDelay(500);
         Serial.print(".");
     }
+    ets_printf("Connected to Wifi: %s", &ssid);
     isWIFIConnected = true;
     while (true)
     {
@@ -25,33 +26,40 @@ void wifiConnect(void *pvParameters)
 
 void uploadFile()
 {
-    file = SPIFFSOpen();
-    if (!file)
+    if (!isWIFIConnected) // Todo remove !
     {
-        Serial.println("FILE IS NOT AVAILABLE!");
-        return;
-    }
 
-    Serial.println("===> Upload FILE to Node.js Server");
+        file = getFile();
+        if (!file)
+        {
+            Serial.println("FILE IS NOT AVAILABLE!");
+            return;
+        }
 
-    HTTPClient client;
-    client.begin("http://192.168.1.124:8888/uploadAudio");
-    client.addHeader("Content-Type", "audio/wav");
-    int httpResponseCode = client.sendRequest("POST", &file, file.size());
-    Serial.print("httpResponseCode : ");
-    Serial.println(httpResponseCode);
+        Serial.println("Uploading file to server");
 
-    if (httpResponseCode == 200)
-    {
-        String response = client.getString();
-        Serial.println("==================== Transcription ====================");
-        Serial.println(response);
-        Serial.println("====================      End      ====================");
+        HTTPClient client;
+        client.begin("http://192.168.1.124:5000/upload");
+        client.addHeader("Content-Type", "audio/wav");
+        int httpResponseCode = client.sendRequest("POST", &file, file.size());
+        Serial.print("httpResponseCode : ");
+        Serial.println(httpResponseCode);
+
+        if (httpResponseCode == 200)
+        {
+            String response = client.getString();
+            Serial.println("==================== Transcription ====================");
+            Serial.println(response);
+            Serial.println("====================      End      ====================");
+        }
+        else
+        {
+            Serial.println("Error");
+        }
+        file.close();
+        client.end();
     }
-    else
-    {
-        Serial.println("Error");
+    else{
+        Serial.println("Wifi not connected");
     }
-    file.close();
-    client.end();
 }

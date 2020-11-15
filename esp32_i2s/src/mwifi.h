@@ -4,3 +4,5 @@
 #include "mfs.h"
 
 void wifiConnect(void *pvParameters);
+
+void uploadFile();

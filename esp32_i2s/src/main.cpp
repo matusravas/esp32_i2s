@@ -7,9 +7,9 @@ void setup()
 {
   // put your setup code here, to run once:
   Serial.begin(115200);
-  SPIFFSInit();
+  initSPIFFS();
   i2sInit();
-  xTaskCreate(i2s_adc, "i2s_adc", 1024 * 2, NULL, 1, NULL);
+  xTaskCreate(i2sADC, "i2s_adc", 1024 * 2, NULL, 1, NULL);
   delay(500);
   xTaskCreate(wifiConnect, "wifi_Connect", 4096, NULL, 0, NULL);
 }
