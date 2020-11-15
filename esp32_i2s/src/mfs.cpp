@@ -121,7 +121,7 @@ void initSPIFFS()
   }
 
   Serial.println("Formating SPIFFS...");
-  // SPIFFS.format();
+  SPIFFS.format();
   SPIFFS.remove(filename);
   file = SPIFFS.open(filename, FILE_WRITE);
   if (!file)
