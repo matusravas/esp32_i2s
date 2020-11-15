@@ -6,4 +6,4 @@
 
 .vscode/*
 server/uploads/*
-__pycache__/*
+server/__pycache__/*
