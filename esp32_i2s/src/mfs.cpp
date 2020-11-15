@@ -120,8 +120,8 @@ void initSPIFFS()
       yield();
   }
 
-  SPIFFS.format();
-  //  SPIFFS.remove(filename);
+  // SPIFFS.format();
+   SPIFFS.remove(filename);
   file = SPIFFS.open(filename, FILE_WRITE);
   if (!file)
   {
