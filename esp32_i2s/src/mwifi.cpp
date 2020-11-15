@@ -26,20 +26,20 @@ void wifiConnect(void *pvParameters)
 
 void uploadFile()
 {
-    if (!isWIFIConnected) // Todo remove !
+    if (isWIFIConnected)
     {
 
         file = getFile();
         if (!file)
         {
-            Serial.println("FILE IS NOT AVAILABLE!");
+            ets_printf("File: %s is not available", file);
             return;
         }
 
         Serial.println("Uploading file to server");
 
         HTTPClient client;
-        client.begin("http://192.168.1.124:5000/upload");
+        client.begin("http://192.168.0.113:8008/upload");
         client.addHeader("Content-Type", "audio/wav");
         int httpResponseCode = client.sendRequest("POST", &file, file.size());
         Serial.print("httpResponseCode : ");
@@ -48,18 +48,17 @@ void uploadFile()
         if (httpResponseCode == 200)
         {
             String response = client.getString();
-            Serial.println("==================== Transcription ====================");
-            Serial.println(response);
-            Serial.println("====================      End      ====================");
+            ets_printf("Response %s", response);
         }
         else
         {
-            Serial.println("Error");
+            Serial.println("Error in uploading file");
         }
         file.close();
         client.end();
     }
-    else{
+    else
+    {
         Serial.println("Wifi not connected");
     }
 }

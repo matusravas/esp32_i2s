@@ -58,7 +58,7 @@ void i2sADC(void *arg)
     // if(isWIFIConnected){
     //   uploadFile();
     // }
-    // uploadFile();
+    uploadFile();
     
     vTaskDelete(NULL); //deleting task itself
 }

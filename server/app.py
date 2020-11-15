@@ -6,23 +6,25 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
+
 uploads_dir = './uploads'
 os.makedirs('uploads', exist_ok=True)
 
+
 @app.route('/ping', methods=['GET'])
-def default():
-    # http://192.168.0.113:5000
-    res = Response({'status': 'Ok'})
+def index():
+    res = Response('Server is running...')
     res.status_code = 200
     return res
 
+
 @app.route('/upload', methods=['POST'])
 def add_user():
-    print('got something')
-    
+    print('File recieved')
     try:
-        file_ = request.files['']
-        file_.save(os.path.join(uploads_dir,'rec.wav'))
+        file_ = open(os.path.join(uploads_dir,'record.wav'), 'wb')
+        file_.write(request.data)
+        file_.close()
         body = json.dumps({'ok': True, 'msg': 'File successfuly saved.'})
         res = Response(body)
         res.status_code = 200
@@ -33,6 +35,5 @@ def add_user():
     return res
     
 
-
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=8008)
