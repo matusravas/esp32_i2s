@@ -1,7 +1,7 @@
 #include "mfs.h"
 
 File file;
-const char filename[] = "/recording.wav";
+const char filename[] = "/record.wav";
 const int headerSize = 44;
 
 void wavHeader(byte *header, int wavSize)
