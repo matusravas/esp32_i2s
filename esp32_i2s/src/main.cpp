@@ -199,10 +199,7 @@ void connect_wifi()
 
 void uploadFile()
 {
-  // ets_printf("Upload func");
-  // delay(2000);
-  // ets_printf("Upload func delayed");
-  if (WiFi.isConnected()) //WiFi.status() != WL_CONNECTED
+  if (WiFi.status() != WL_CONNECTED) // (WiFi.isConnected()
   {
     // listFiles();
     openFile(); // this opnes file to global defined variable: File file

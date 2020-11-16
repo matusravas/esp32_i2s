@@ -1,6 +1,5 @@
 from flask import Flask, Response, request
 import os
-import json
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -13,7 +12,7 @@ os.makedirs('uploads', exist_ok=True)
 
 @app.route('/ping', methods=['GET'])
 def index():
-    res = Response()
+    res = Response('Server is running...')
     res.status_code = 200
     return res
 
@@ -24,17 +23,15 @@ def add_user():
     global idx
     idx += 1
     try:
-        file_ = open(os.path.join(uploads_dir,f'record_{idx}.wav'), 'wb')
-        file_.write(request.data)
-        file_.close()
-        body = json.dumps({'ok': True, 'msg': 'File successfuly saved.'})
+        with open(os.path.join(uploads_dir,f'record_{idx}.wav'), 'wb') as f:
+            f.write(request.data)
         res = Response()
         res.content_length = 200
         res.status_code = 200
     except Exception as e:
         idx -= 1
-        body = json.dumps({'ok': False, 'msg': 'File was not saved', 'error': f'{e}'})
-        res = Response(body)
+        res = Response()
+        res.content_length = - 1
         res.status_code = 500
     return res
     
