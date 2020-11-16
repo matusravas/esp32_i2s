@@ -199,7 +199,7 @@ void connect_wifi()
 
 void uploadFile()
 {
-  if (WiFi.status() != WL_CONNECTED) // (WiFi.isConnected()
+  if (WiFi.isConnected())
   {
     // listFiles();
     openFile(); // this opnes file to global defined variable: File file
@@ -238,6 +238,12 @@ void uploadFile()
   }
 }
 
+/**
+ * @brief Scale data to 8bit for data from ADC.
+ *        Data from ADC are 12bit width by default.
+ *        DAC can only output 8 bit data.
+ *        Scale each 12bit ADC data to 8bit DAC data.
+ */
 void i2sScaleDataADC(uint8_t *d_buff, uint8_t *s_buff, uint32_t len)
 {
   uint32_t j = 0;
@@ -250,7 +256,7 @@ void i2sScaleDataADC(uint8_t *d_buff, uint8_t *s_buff, uint32_t len)
   }
 }
 
-void read_I2S_adc()
+void read_I2S_data()
 {
 
   // while (1)
@@ -342,6 +348,6 @@ void setup()
 
 void loop()
 {
-  read_I2S_adc();
+  read_I2S_data();
   // put your main code here, to run repeatedly:
 }
