@@ -39,8 +39,11 @@ void uploadFile()
         Serial.println("Uploading file to server");
 
         HTTPClient client;
+        // client.setConnectTimeout(2000);
         client.begin("http://192.168.0.113:8008/upload");
+        
         client.addHeader("Content-Type", "audio/wav");
+        // client.setTimeout(2000);
         int httpResponseCode = client.sendRequest("POST", &file, file.size());
         Serial.print("httpResponseCode : ");
         Serial.println(httpResponseCode);
