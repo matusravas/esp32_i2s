@@ -13,22 +13,26 @@ os.makedirs('uploads', exist_ok=True)
 
 @app.route('/ping', methods=['GET'])
 def index():
-    res = Response('Server is running...')
+    res = Response()
     res.status_code = 200
     return res
 
-
+idx = 0
 @app.route('/upload', methods=['POST'])
 def add_user():
     print('File recieved')
+    global idx
+    idx += 1
     try:
-        file_ = open(os.path.join(uploads_dir,'record.wav'), 'wb')
+        file_ = open(os.path.join(uploads_dir,f'record_{idx}.wav'), 'wb')
         file_.write(request.data)
         file_.close()
         body = json.dumps({'ok': True, 'msg': 'File successfuly saved.'})
-        res = Response(body)
+        res = Response()
+        res.content_length = 200
         res.status_code = 200
     except Exception as e:
+        idx -= 1
         body = json.dumps({'ok': False, 'msg': 'File was not saved', 'error': f'{e}'})
         res = Response(body)
         res.status_code = 500
