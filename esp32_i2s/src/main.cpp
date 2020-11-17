@@ -15,16 +15,7 @@
 #define RECORD_TIME (10) //Seconds
 #define I2S_CHANNEL_NUM (1)
 #define FLASH_RECORD_SIZE (I2S_CHANNEL_NUM * I2S_SAMPLE_RATE * I2S_SAMPLE_BITS / 8 * RECORD_TIME)
-//I2S built-in ADC unit
-#define I2S_ADC_UNIT              ADC_UNIT_1
-//I2S built-in ADC channel
-#define I2S_ADC_CHANNEL           ADC1_CHANNEL_0
 
-// bool isWIFIConnected;
-
-// unsigned long now;
-// unsigned long then;
-// uint8_t interval = 2;
 
 File file;
 const char filename[] = "/record.wav";
@@ -230,6 +221,7 @@ void uploadFile()
     // int httpResponseCode = client.sendRequest("POST", &file, file.size());
     // Serial.print("httpResponseCode : ");
     // Serial.println(httpResponseCode);
+    client.end();
     file.close();
 
     // if (httpResponseCode == 200)
@@ -240,7 +232,7 @@ void uploadFile()
     // {
     //   Serial.println("Error in uploading file");
     // }
-    client.end();
+    // client.end();
   }
   else
   {
@@ -281,6 +273,16 @@ void read_I2S_data()
 
   i2s_read(I2S_PORT, (void *)i2s_read_buff, i2s_read_len, &bytes_read, portMAX_DELAY);
   i2s_read(I2S_PORT, (void *)i2s_read_buff, i2s_read_len, &bytes_read, portMAX_DELAY);
+  i2s_read(I2S_PORT, (void *)i2s_read_buff, i2s_read_len, &bytes_read, portMAX_DELAY);
+  i2s_read(I2S_PORT, (void *)i2s_read_buff, i2s_read_len, &bytes_read, portMAX_DELAY);
+  i2s_read(I2S_PORT, (void *)i2s_read_buff, i2s_read_len, &bytes_read, portMAX_DELAY);
+  i2s_read(I2S_PORT, (void *)i2s_read_buff, i2s_read_len, &bytes_read, portMAX_DELAY); //seems okay with six
+  i2s_read(I2S_PORT, (void *)i2s_read_buff, i2s_read_len, &bytes_read, portMAX_DELAY);
+  i2s_read(I2S_PORT, (void *)i2s_read_buff, i2s_read_len, &bytes_read, portMAX_DELAY); //better with eight
+  // i2s_read(I2S_PORT, (void *)i2s_read_buff, i2s_read_len, &bytes_read, portMAX_DELAY);
+  // i2s_read(I2S_PORT, (void *)i2s_read_buff, i2s_read_len, &bytes_read, portMAX_DELAY); // still okay with ten
+  // i2s_read(I2S_PORT, (void *)i2s_read_buff, i2s_read_len, &bytes_read, portMAX_DELAY);
+  // i2s_read(I2S_PORT, (void *)i2s_read_buff, i2s_read_len, &bytes_read, portMAX_DELAY); // 
 
   Serial.println(" *** Recording Start *** ");
   // File file = createFile();
@@ -331,7 +333,8 @@ void initI2S()
       .intr_alloc_flags = 0,
       .dma_buf_count = 64,
       .dma_buf_len = 1024,
-      .use_apll = 1};
+      .use_apll = 1
+      };
 
   i2s_driver_install(I2S_PORT, &i2s_config, 0, NULL);
   // i2s_set_adc_mode(I2S_ADC_UNIT, I2S_ADC_CHANNEL);
