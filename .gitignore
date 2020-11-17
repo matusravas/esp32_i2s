@@ -4,6 +4,7 @@ esp32_i2s/.vscode/*
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
+esp32_i2s/src/Credentials.h
 
 server/.vscode/*
 server/uploads/*
