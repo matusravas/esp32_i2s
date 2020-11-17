@@ -3,6 +3,7 @@
 #include <driver/i2s.h>
 #include <WiFi.h>
 #include <HTTPClient.h>
+#include "Credentials.h"
 
 #define I2S_WS 15
 #define I2S_SD 13
@@ -14,8 +15,16 @@
 #define RECORD_TIME (10) //Seconds
 #define I2S_CHANNEL_NUM (1)
 #define FLASH_RECORD_SIZE (I2S_CHANNEL_NUM * I2S_SAMPLE_RATE * I2S_SAMPLE_BITS / 8 * RECORD_TIME)
+//I2S built-in ADC unit
+#define I2S_ADC_UNIT              ADC_UNIT_1
+//I2S built-in ADC channel
+#define I2S_ADC_CHANNEL           ADC1_CHANNEL_0
 
-bool isWIFIConnected;
+// bool isWIFIConnected;
+
+// unsigned long now;
+// unsigned long then;
+// uint8_t interval = 2;
 
 File file;
 const char filename[] = "/record.wav";
@@ -176,9 +185,9 @@ void openFile()
 
 void connect_wifi()
 {
-  isWIFIConnected = false;
-  char *ssid = "cerova_449b";
-  char *password = "adka2002";
+  // isWIFIConnected = false;
+  char *ssid = SSID;
+  char *password = PWD;
 
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED)
@@ -188,7 +197,7 @@ void connect_wifi()
     Serial.print(".");
   }
   Serial.println("Connected to Wifi");
-  isWIFIConnected = true;
+  // isWIFIConnected = true;
 
   // vTaskDelete(NULL);
   // while (true)
@@ -216,20 +225,21 @@ void uploadFile()
     client.begin("http://192.168.0.113:8008/upload");
 
     client.addHeader("Content-Type", "audio/wav");
+    client.sendRequest("POST", &file, file.size());
     // client.setTimeout(2000);
-    int httpResponseCode = client.sendRequest("POST", &file, file.size());
-    Serial.print("httpResponseCode : ");
-    Serial.println(httpResponseCode);
+    // int httpResponseCode = client.sendRequest("POST", &file, file.size());
+    // Serial.print("httpResponseCode : ");
+    // Serial.println(httpResponseCode);
     file.close();
 
-    if (httpResponseCode == 200)
-    {
-      Serial.println("File uploaded");
-    }
-    else
-    {
-      Serial.println("Error in uploading file");
-    }
+    // if (httpResponseCode == 200)
+    // {
+    //   Serial.println("File uploaded");
+    // }
+    // else
+    // {
+    //   Serial.println("Error in uploading file");
+    // }
     client.end();
   }
   else
@@ -275,6 +285,7 @@ void read_I2S_data()
   Serial.println(" *** Recording Start *** ");
   // File file = createFile();
   createFile();
+  // i2s_adc_enable(I2S_PORT);
   while (flash_wr_size < FLASH_RECORD_SIZE)
   {
     //read data from I2S bus, in this case, from ADC.
@@ -292,7 +303,7 @@ void read_I2S_data()
     ets_printf("Never Used Stack Size: %u\n", uxTaskGetStackHighWaterMark(NULL));
   }
   file.close();
-
+// i2s_adc_disable(I2S_PORT);
   free(i2s_read_buff);
   i2s_read_buff = NULL;
   free(flash_write_buff);
@@ -323,6 +334,7 @@ void initI2S()
       .use_apll = 1};
 
   i2s_driver_install(I2S_PORT, &i2s_config, 0, NULL);
+  // i2s_set_adc_mode(I2S_ADC_UNIT, I2S_ADC_CHANNEL);
 
   const i2s_pin_config_t pin_config = {
       .bck_io_num = I2S_SCK,
@@ -348,6 +360,10 @@ void setup()
 
 void loop()
 {
+  // now = millis();
+  // if (now - then > interval){
+  //   then = now;
+  // }
   read_I2S_data();
   // put your main code here, to run repeatedly:
 }
